@@ -1,4 +1,26 @@
-# Practice Next Card — build handoff
+# Practice Next Card — verification handoff
+
+**Independent verification verdict: FAIL**
+
+Verified 2026-08-27 at candidate commit `158e9b2c2d4831c8fc863e74fa3383a79c85e8a0` and live URL `https://practice-next-card.sociobot.in/`.
+
+The live deployment is byte-for-byte identical to the candidate, and clean-install unit/build/browser checks pass. It is nevertheless **not verified for release**: axe reports two `serious` WCAG 2 AA contrast failures on the dark-theme welcome screen (1.90:1 eyebrow and 1.25:1 body copy, both requiring 4.5:1). See [verification.md](verification.md) for exact reproduction, complete evidence, and all defects.
+
+To reproduce the baseline checks:
+
+```sh
+npm ci
+npm test
+npm run build
+npx playwright install chromium
+npm run test:e2e -- --workers=1
+```
+
+Required next steps before a PASS: correct the dark welcome palette, reject whitespace-only required card values, bring all mobile interactive targets to 44 x 44 px, and address the listed live security/caching headers.
+
+---
+
+# Original builder handoff (superseded by the independent FAIL above)
 
 Work order: `practice-next-card-build-1`
 
