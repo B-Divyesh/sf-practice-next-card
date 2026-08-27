@@ -167,10 +167,14 @@ function openCardDialog(id?: string): void {
       <label>Photo <input name="scorePhoto" type="file" accept="image/jpeg,image/png,image/webp"><small>${existing?.scorePhoto ? 'Choose a new image to replace the current one.' : 'Stored only on this device; compressed before saving.'}</small></label>
     </details>
     <p class="form-error" id="card-error" role="alert"></p>
-    <div class="dialog-actions"><button type="button" class="button text-button" id="cancel-card">Cancel</button><button class="button primary">${existing ? 'Save changes' : 'Add to today'}</button></div>
+    <div class="dialog-actions">${existing ? '<button type="button" class="button danger-button" id="delete-card">Delete card</button>' : ''}<button type="button" class="button text-button" id="cancel-card">Cancel</button><button class="button primary">${existing ? 'Save changes' : 'Add to today'}</button></div>
   </form>`);
   dialog.querySelector<HTMLInputElement>('[name="piece"]')?.focus();
   dialog.querySelector('#cancel-card')?.addEventListener('click', () => dialog.close());
+  dialog.querySelector('#delete-card')?.addEventListener('click', async () => {
+    if (!existing || !confirm(`Delete the card for ${existing.piece}, measure ${existing.measure}?`)) return;
+    data.cards = data.cards.filter(card => card.id !== existing.id); activeId = ''; await persist(); dialog.close(); render(); announce('Card deleted.');
+  });
   dialog.querySelector<HTMLFormElement>('#card-form')!.addEventListener('submit', async event => {
     event.preventDefault();
     const form = event.currentTarget as HTMLFormElement;
@@ -205,7 +209,12 @@ async function toggleTimer(event: Event): Promise<void> {
   const button = event.currentTarget as HTMLButtonElement;
   const card = data.cards.find(item => item.id === button.dataset.id)!;
   if (card.timerStartedAt) { card.accumulatedSeconds = elapsedSeconds(card); delete card.timerStartedAt; }
-  else card.timerStartedAt = new Date().toISOString();
+  else {
+    for (const other of data.cards) {
+      if (other.id !== card.id && other.timerStartedAt) { other.accumulatedSeconds = elapsedSeconds(other); delete other.timerStartedAt; }
+    }
+    card.timerStartedAt = new Date().toISOString();
+  }
   card.updatedAt = new Date().toISOString(); await persist(); render(); announce(card.timerStartedAt ? 'Timer started.' : `Timer paused at ${formatTime(card.accumulatedSeconds)}.`);
 }
 
@@ -307,8 +316,12 @@ function registerServiceWorker(): void {
     registration.addEventListener('updatefound', () => {
       const worker = registration.installing; worker?.addEventListener('statechange', () => {
         if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-          announce('A fresh version is ready. Reload to update.');
-          const toast = document.querySelector('#toast'); toast?.addEventListener('click', () => { worker.postMessage({ type: 'SKIP_WAITING' }); location.reload(); }, { once: true });
+          const toast = document.querySelector<HTMLElement>('#toast');
+          if (toast) {
+            toast.innerHTML = 'A fresh version is ready. <button class="toast-action">Reload now</button>';
+            toast.classList.add('show');
+            toast.querySelector('button')?.addEventListener('click', () => { navigator.serviceWorker.addEventListener('controllerchange', () => location.reload(), { once: true }); worker.postMessage({ type: 'SKIP_WAITING' }); });
+          }
         }
       });
     });

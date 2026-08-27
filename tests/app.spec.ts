@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test('creates, times, logs, and reopens a practice card', async ({ page }) => {
+  const consoleErrors: string[] = [];
+  page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('What happens next?');
   await page.getByRole('button', { name: 'Make the first card' }).click();
@@ -19,6 +21,7 @@ test('creates, times, logs, and reopens a practice card', async ({ page }) => {
   await expect(page.getByText('The turn was even twice.')).toBeVisible();
   await page.getByRole('button', { name: 'Reopen' }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('What happens next?');
+  expect(consoleErrors).toEqual([]);
 });
 
 test('has no serious accessibility violations and works offline after first load', async ({ page, context }) => {
@@ -45,4 +48,11 @@ test('captures a returned license without exposing it in the URL', async ({ page
   await page.goto('/?license=test-token-123');
   await expect.poll(() => page.url()).not.toContain('license=');
   await expect.poll(() => page.evaluate(() => localStorage.getItem('sb_license:practice-next-card'))).toBe('test-token-123');
+});
+
+test('dark treatment has no serious accessibility violations', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await page.goto('/settings');
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter(item => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
