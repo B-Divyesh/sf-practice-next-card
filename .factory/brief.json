@@ -1,0 +1,8 @@
+{
+  "slug": "practice-next-card",
+  "title": "Practice Next Card",
+  "artifact_class": "pwa-offline",
+  "smallest_useful_product": "Offline cards with piece name, measure/range, one next action, timer, perceived outcome, and optional photo/link to the user's own score; show only today's 3 cards.",
+  "monetization": "one-time",
+  "constraints": "Store only user-entered measure references; do not ingest or redistribute scores; avoid improvement claims."
+}
