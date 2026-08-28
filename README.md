@@ -41,7 +41,7 @@ npm run test:e2e
 
 ## Deployment
 
-Deploy the contents of `dist/` to any static host with HTTPS. The service worker scope is `/`; the build fingerprints JS/CSS and injects their exact names into the precache. The shipped `_headers` file provides the CSP, anti-framing, Permissions-Policy, manifest MIME type, and immutable cache policy expected by the static deployment. The factory registers and switches the Sociobot product environment; no payment-provider credentials belong in this repository.
+Deploy the contents of `dist/` to any static host with HTTPS. The service worker scope is `/`; the build fingerprints JS/CSS and injects their exact names into the precache. The shipped `_headers` and Azure Static Web Apps `staticwebapp.config.json` provide the CSP, anti-framing, Permissions-Policy, manifest MIME type, and immutable cache policy expected by the static deployment. The factory registers and switches the Sociobot product environment; no payment-provider credentials belong in this repository.
 
 The researched scope is in [`.factory/brief.json`](.factory/brief.json), the visual and asset provenance in [`.factory/design.md`](.factory/design.md), and verification notes in [`.factory/handoff.md`](.factory/handoff.md).
 
