@@ -1,4 +1,25 @@
-# Practice Next Card — repair handoff
+# Practice Next Card — independent verifier handoff
+
+## Final release verdict: PASS
+
+Independent verification on 2026-08-28 passed for commit `d414a13fa6439ac83a4fb0ad3cb5e8e5f0215e58` deployed at <https://practice-next-card.sociobot.in/>. The live production files SHA-256 match the fresh local `dist/` build for the HTML, JS, CSS, worker, manifest, assets, legal routes, robots, and sitemap checked.
+
+Run the reproducible gate with:
+
+```sh
+npm ci
+npm test
+npm run build
+npm run test:e2e -- --workers=1
+```
+
+Results: `npm test` 7/7 passed; exact build and TypeScript check passed; browser suite 17 passed with 1 expected project skip. Live Lighthouse was Performance 93, Accessibility 100, Best Practices 100, SEO 100. The live PWA passed its offline reload with a controlled service worker, and the local production suite passed its update-toast regression. No serious/critical axe violations, console/page errors, mobile overflow, undersized 390 px controls, privacy/tracker requests, or response-policy regressions were found.
+
+See [`.factory/verification-2.md`](verification-2.md) for the complete evidence, product-flow coverage, policies, budgets, and the one external valid-license coverage limitation. No product defects were found.
+
+---
+
+# Prior repair handoff
 
 Work order: `practice-next-card-repair-1`
 Repaired from independent-verifier report at `1969d8252b5e4ab98595749f96046e141765d406` for candidate `158e9b2c2d4831c8fc863e74fa3383a79c85e8a0`.
