@@ -39,7 +39,7 @@ npm run build
 npm run test:e2e -- --workers=1
 ```
 
-Deploy the generated `dist/` directory unchanged through the static work-order pipeline so its `_headers` policy is applied. The production identity/header check will be recorded here after the pushed commit is deployed.
+Deployment completed via `/opt/fleet/lib/deploy-static.sh practice-next-card dist` as Azure Static Web Apps deployment `aba5b589-0d94-4d65-ad24-abeed044140e`. Live verification at `https://practice-next-card.sociobot.in` passed: HTTP 200, no browser console errors, title/lang/one h1/main/alt/button-name checks passed, 2,184 ms smoke-test load, and the live `index.html`, manifest, service worker, hero, and fingerprinted app JS SHA-256 values exactly matched local `dist/`. Live headers include the CSP with `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `Permissions-Policy`, nosniff, referrer policy, `application/manifest+json`, and `public, max-age=31536000, immutable` for the fingerprinted JS.
 
 ## Known gaps
 
