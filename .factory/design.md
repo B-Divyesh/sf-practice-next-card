@@ -23,6 +23,8 @@ The default is a warm paper-light treatment; a near-black rehearsal-room dark tr
 
 Body/text pairs exceed 4.5:1; outlines and large display marks exceed 3:1. Status always has text or an icon in addition to color.
 
+The welcome label is intentionally a light cassette insert in dark mode (`ink` becomes its background), so its body copy switches to `#1D1B18` and its oxide eyebrow to `#A12626`; both retain AA text contrast on that insert rather than inheriting the dark-surface text token.
+
 ## Type and spacing
 
 - Display: `Arial Black`, `Arial Narrow Bold`, sans-serif — compressed block capitals like a hand-set zine cover, using installed system faces so no font request leaves the device.
@@ -46,4 +48,3 @@ Transitions last 160–220 ms and animate only transform/opacity: a new label sl
 - Generation prompt: `Use case: stylized-concept. Asset type: responsive PWA empty-state hero. A blank cream audio cassette beside exactly three text-free paper practice slips, a sharpened pencil and a small analog stopwatch on a scarred rehearsal table. Cassette-era independent music zine collage, xerox halftone grain, torn paper fibers, matte ink and masking tape; warm directional desk lamp; overhead editorial framing with quiet negative space; oatmeal, charcoal, oxide red and faded cyan palette. No readable text, no musical notation, no logos, no brands, no hands or people, no watermark, no gradients, no glossy 3D, no interface.`
 - Generated with the factory Azure image deployment (`factory-image`) on 2026-08-27. Original output and prompt sidecar live in `assets/src/`; WebP derivative is shipped. Generated imagery is original for this product and disclosed in the footer.
 - App icons and favicon are original hand-authored SVG geometry (cassette window + forward marker), exported locally to PNG for PWA sizes.
-

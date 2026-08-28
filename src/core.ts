@@ -62,13 +62,17 @@ export function isHttpUrl(value: string): boolean {
   }
 }
 
+export function hasCardDetails(piece: string, measure: string, action: string): boolean {
+  return [piece, measure, action].every(value => value.trim().length > 0);
+}
+
 export function validateImport(value: unknown): AppData {
   if (!value || typeof value !== 'object') throw new Error('That file does not contain Practice Next Card data.');
   const candidate = value as Partial<AppData>;
   if (candidate.version !== 1 || !Array.isArray(candidate.cards)) throw new Error('This backup version is not supported.');
   for (const card of candidate.cards) {
     if (!card || typeof card !== 'object' || typeof card.id !== 'string' || typeof card.piece !== 'string' ||
-      typeof card.measure !== 'string' || typeof card.action !== 'string' || !['queued', 'completed'].includes(card.status) ||
+      typeof card.measure !== 'string' || typeof card.action !== 'string' || !hasCardDetails(card.piece, card.measure, card.action) || !['queued', 'completed'].includes(card.status) ||
       !Array.isArray(card.attempts)) {
       throw new Error('One or more cards in that backup are incomplete.');
     }

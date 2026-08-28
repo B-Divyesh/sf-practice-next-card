@@ -1,9 +1,5 @@
-const VERSION = 'pnc-v1.0.1';
-const SHELL = [
-  '/', '/index.html', '/offline.html', '/manifest.webmanifest',
-  '/icons/icon.svg', '/icons/icon-192.png', '/icons/icon-512.png',
-  '/assets/app.js', '/assets/index.css', '/assets/hero-cassette.webp'
-];
+const VERSION = 'pnc-build';
+const SHELL = /* __PRECACHE_MANIFEST__ */ [];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(VERSION).then(cache => cache.addAll(SHELL)));

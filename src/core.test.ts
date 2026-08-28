@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { elapsedSeconds, formatTime, isHttpUrl, todayQueue, validateImport, type PracticeCard } from './core';
+import { elapsedSeconds, formatTime, hasCardDetails, isHttpUrl, todayQueue, validateImport, type PracticeCard } from './core';
 
 const card = (id: string, status: PracticeCard['status'], createdAt: string): PracticeCard => ({
   id, status, createdAt, updatedAt: createdAt, piece: 'Sonata', measure: '37', action: 'Slow the leap',
@@ -25,5 +25,11 @@ describe('practice card rules', () => {
   it('rejects malformed backups', () => {
     expect(() => validateImport({ version: 2, cards: [] })).toThrow(/not supported/);
     expect(validateImport({ version: 1, cards: [] }).cards).toEqual([]);
+  });
+
+  it('requires non-whitespace card details from every data entry point', () => {
+    expect(hasCardDetails('Bach', '37–40', 'Slow the leap')).toBe(true);
+    expect(hasCardDetails(' ', '\n', '\t')).toBe(false);
+    expect(() => validateImport({ version: 1, cards: [{ ...card('1', 'queued', '2026-01-01'), piece: ' ', measure: '37', action: 'Play slowly' }] })).toThrow(/incomplete/);
   });
 });

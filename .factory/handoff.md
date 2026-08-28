@@ -1,66 +1,47 @@
-# Practice Next Card — verification handoff
+# Practice Next Card — repair handoff
 
-**Independent verification verdict: FAIL**
+Work order: `practice-next-card-repair-1`
+Repaired from independent-verifier report at `1969d8252b5e4ab98595749f96046e141765d406` for candidate `158e9b2c2d4831c8fc863e74fa3383a79c85e8a0`.
 
-Verified 2026-08-27 at candidate commit `158e9b2c2d4831c8fc863e74fa3383a79c85e8a0` and live URL `https://practice-next-card.sociobot.in/`.
+## Release-blocking fixes
 
-The live deployment is byte-for-byte identical to the candidate, and clean-install unit/build/browser checks pass. It is nevertheless **not verified for release**: axe reports two `serious` WCAG 2 AA contrast failures on the dark-theme welcome screen (1.90:1 eyebrow and 1.25:1 body copy, both requiring 4.5:1). See [verification.md](verification.md) for exact reproduction, complete evidence, and all defects.
+- Corrected the dark welcome cassette-insert colors. Its explanatory copy is now `#1D1B18` and eyebrow `#A12626` on the light insert, both above WCAG AA normal-text contrast; the dark welcome is now included in axe coverage on desktop and 390 px mobile.
+- Required card details are normalized and rejected when whitespace-only in both the dialog save path and imported backups. The dialog announces the error and focuses the first incomplete field.
+- Made every visible mobile link/control on the home screen at least 44 × 44 CSS px, including the wordmark, skip link, and legal links. The mobile browser regression measures each `button`, `a`, and `summary` at 390 px.
+- Added deploy-consumed `dist/_headers` policy: strict same-origin CSP (with the documented Sociobot billing API exception), anti-framing, Permissions-Policy, nosniff, referrer policy, manifest MIME type, and immutable JS/CSS cache rules. Vite now fingerprints JS/CSS; postbuild writes those exact files to the service-worker precache and derives the cache version from the precached content.
+- Pinned Playwright to `1.58.2`, matching the work-order browser requirement.
 
-To reproduce the baseline checks:
+## Verification on 2026-08-28
+
+Clean install and quality gates:
 
 ```sh
-npm ci
-npm test
-npm run build
-npx playwright install chromium
+npm ci                 # 0 reported vulnerabilities
+npm test               # 7/7 passed
+npm run build          # passed; dist/index.html exists
 npm run test:e2e -- --workers=1
 ```
 
-Required next steps before a PASS: correct the dark welcome palette, reject whitespace-only required card values, bring all mobile interactive targets to 44 x 44 px, and address the listed live security/caching headers.
+Browser result: **17 passed, 1 intentionally skipped**. The serial suite exercised Desktop Chrome and the 390 × 844 mobile project: create → timer → attempt → archive → reopen; whitespace validation; local offline reload; update toast; legal routes; license URL cleanup; keyboard skip navigation, Enter, Escape, and focus restoration; dark welcome axe; and 390 px target measurements. Axe reported no serious or critical violations on the light and dark welcome routes.
 
----
+Local production-preview Lighthouse (mobile/performance preset): Performance **100**, Accessibility **100**, Best Practices **100**, SEO **100**; LCP **1.5 s**, CLS **0**, TBT **0 ms**.
 
-# Original builder handoff (superseded by the independent FAIL above)
+Build budgets: app JS `25,205 B` raw / `9,164 B` gzip; CSS `13,669 B` raw / `3,973 B` gzip; hero `79,218 B`. All are within the static-PWA budgets. The final worker precache contains the fingerprinted JS/CSS plus shell, icons, manifest, offline page, and hero.
 
-Work order: `practice-next-card-build-1`
+Privacy/response policy review: source and build references are first-party except the documented Sociobot checkout/verify endpoint; there are no third-party fonts, scripts, analytics, or trackers. `dist/_headers` is regression-tested for CSP, frame protection, permissions, manifest MIME, and immutable cache directives; Vite preview confirmed `application/manifest+json` for the manifest.
 
-Completed: 2026-08-27
-
-## What shipped
-
-- A production Vite + TypeScript PWA at `dist/`, built around a strict three-card queue.
-- Full card lifecycle: piece, measure/range, one next action, edit/delete, optional local score-reference photo or HTTP(S) link, persistent timer, perceived outcome, evidence note, follow-up handoff, archive, and reopen.
-- IndexedDB persistence with complete JSON export/import and confirmed local erase. Photos are resized to at most 1200 px and encoded as WebP before storage.
-- Offline app shell with versioned service-worker cache, cache-first local assets, navigation fallback, install manifest, 192/512/maskable icons, and accessible update notice.
-- Responsive cassette-era zine UI for desktop and 390 px mobile, explicit light/dark treatments, designed focus states, native keyboard-safe dialogs, and reduced-motion fallback.
-- Original generated hero collage at 79 KB WebP; source, exact prompt, model, and provenance are in `assets/src/` and `.factory/design.md`.
-- `/privacy` and `/terms` routes plus direct static entry points, robots.txt, sitemap, README, and MIT license.
-- Optional $9 one-time Supporter edition using only the Sociobot checkout/verify contract. It unlocks full archive visibility and search; the three-card loop, photos, recent 30-item archive, and complete export remain free. Returned licenses are stored under `sb_license:practice-next-card`, removed from the URL, cached for at most one day, and reconciled without blocking offline use.
-
-## Verification
-
-Run from a clean checkout with Node.js 20+:
+## Run and deploy
 
 ```sh
 npm ci
 npm test
 npm run build
-npx playwright install chromium
-npm run test:e2e
+npm run test:e2e -- --workers=1
 ```
 
-Results on 2026-08-27:
+Deploy the generated `dist/` directory unchanged through the static work-order pipeline so its `_headers` policy is applied. The production identity/header check will be recorded here after the pushed commit is deployed.
 
-- `npm test`: 4/4 unit tests passed.
-- `npm run build`: passed; emitted `dist/index.html`. Initial app JS is 24.97 KB raw / 9.03 KB gzip; CSS is 13.31 KB raw / 3.92 KB gzip; hero is 79.2 KB. All are under budget.
-- `npm run test:e2e`: 10/10 passed across Desktop Chrome and a 390 × 844 mobile viewport. Covered create → timer → attempt → archive → reopen, direct legal routes, license-token capture/URL cleanup, offline reload, console errors, axe, dark color scheme, and reduced motion.
-- Axe: no serious or critical violations in the tested light and dark routes; color-contrast checks were enabled.
-- Lighthouse 13 mobile against the production build: Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.0 s, LCP 1.9 s, CLS 0, TBT 0 ms.
-- Manual visual review completed at 1440 × 1000 and 390 × 844. The first generated candidate was rejected for an accidental notation fragment; the shipped second candidate has no text, notation, branding, people, or misleading UI.
-- `git diff --check`: clean.
+## Known gaps
 
-## Known gaps / factory follow-up
-
-- The factory still needs to register the `practice-next-card` product and its $9 price/return URL in the Sociobot billing engine. The UI intentionally uses the slug endpoint and contains no provider product ID or secret. A real paid token could not be exercised before registration; token capture, storage, cleanup, and invalid-token behavior are browser-tested.
-- Data is intentionally device-local with manual export/import; cross-device sync and score hosting are non-goals.
-- Lighthouse was measured locally against `vite preview`; production CDN/network conditions may vary.
+- The factory must register the $9 Sociobot product before a real paid token can be verified; the local token capture/cleanup and invalid-token paths are browser-tested.
+- Practice data remains deliberately local-first; export/import is the cross-device handoff.

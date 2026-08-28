@@ -1,5 +1,5 @@
 import './style.css';
-import { EMPTY_DATA, elapsedSeconds, formatTime, isHttpUrl, makeId, todayQueue, validateImport, type AppData, type Outcome, type PracticeCard } from './core';
+import { EMPTY_DATA, elapsedSeconds, formatTime, hasCardDetails, isHttpUrl, makeId, todayQueue, validateImport, type AppData, type Outcome, type PracticeCard } from './core';
 import { loadData, saveData } from './db';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -25,7 +25,7 @@ function shell(content: string, active = ''): string {
       </nav>
       <span class="net-state" id="net-state"><span aria-hidden="true">●</span> ${navigator.onLine ? 'On device' : 'Offline · saved locally'}</span>
     </header>
-    <main id="main">${content}</main>
+    <main id="main" tabindex="-1">${content}</main>
     <footer>
       <p>Private by default. Built for the next honest five minutes.</p>
       <nav aria-label="Legal"><a href="/privacy" data-route>Privacy</a><a href="/terms" data-route>Terms</a></nav>
@@ -179,16 +179,25 @@ function openCardDialog(id?: string): void {
     event.preventDefault();
     const form = event.currentTarget as HTMLFormElement;
     const values = new FormData(form);
+    const piece = String(values.get('piece') ?? '').trim();
+    const measure = String(values.get('measure') ?? '').trim();
+    const action = String(values.get('action') ?? '').trim();
     const scoreLink = String(values.get('scoreLink') ?? '').trim();
     const error = dialog.querySelector<HTMLElement>('#card-error')!;
+    if (!hasCardDetails(piece, measure, action)) {
+      error.textContent = 'Give this card a piece, measure, and one next action.';
+      const field = !piece ? 'piece' : !measure ? 'measure' : 'action';
+      form.querySelector<HTMLElement>(`[name="${field}"]`)?.focus();
+      return;
+    }
     if (!isHttpUrl(scoreLink)) { error.textContent = 'Use a full http:// or https:// link.'; return; }
     try {
       const file = values.get('scorePhoto') as File;
       const photo = file?.size ? await imageToDataUrl(file) : existing?.scorePhoto;
       const now = new Date().toISOString();
-      if (existing) Object.assign(existing, { piece: String(values.get('piece')).trim(), measure: String(values.get('measure')).trim(), action: String(values.get('action')).trim(), scoreLink, scorePhoto: photo, updatedAt: now });
+      if (existing) Object.assign(existing, { piece, measure, action, scoreLink, scorePhoto: photo, updatedAt: now });
       else {
-        const card: PracticeCard = { id: makeId(), piece: String(values.get('piece')).trim(), measure: String(values.get('measure')).trim(), action: String(values.get('action')).trim(), scoreLink, scorePhoto: photo, createdAt: now, updatedAt: now, status: 'queued', accumulatedSeconds: 0, attempts: [] };
+        const card: PracticeCard = { id: makeId(), piece, measure, action, scoreLink, scorePhoto: photo, createdAt: now, updatedAt: now, status: 'queued', accumulatedSeconds: 0, attempts: [] };
         data.cards.push(card); activeId = card.id;
       }
       await persist(); dialog.close(); render(); announce(existing ? 'Card updated.' : 'Card added to today.');
