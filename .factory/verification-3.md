@@ -2,7 +2,7 @@
 
 Verified on 2026-09-06 against the live product at <https://practice-next-card.sociobot.in>.
 
-Implementation candidate SHA: `639cd778902e721da98ccd25ecf616c8a12e0e92` (`fix: add isolated demo and verifiable product claims`). The preceding documentation/review SHA is `39dace7`; this verification is a later documentation-only handoff.
+Implementation candidate SHA: `639cd778902e721da98ccd25ecf616c8a12e0e92` (`fix: add isolated demo and verifiable product claims`). The preceding documentation/review SHA is `39dace7`; the initial QA documentation commit is `6bc765f`. This verification is a later documentation-only handoff.
 
 ## Verdict: FAIL
 

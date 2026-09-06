@@ -2,7 +2,7 @@
 
 ## Current verdict: FAIL
 
-Independent verification on 2026-09-06 reviewed live candidate `639cd778902e721da98ccd25ecf616c8a12e0e92` at <https://practice-next-card.sociobot.in>. The implementation candidate matches the fresh local `dist/` artifact. This documentation handoff follows the candidate; the previous review/documentation SHA was `39dace7`.
+Independent verification on 2026-09-06 reviewed live candidate `639cd778902e721da98ccd25ecf616c8a12e0e92` at <https://practice-next-card.sociobot.in>. The implementation candidate matches the fresh local `dist/` artifact. This documentation handoff follows the candidate; the previous review/documentation SHA was `39dace7` and the initial QA documentation commit is `6bc765f`.
 
 There is **1 low-severity finding** and **0 untested public claims**: at a 390 px phone viewport, the Settings **Have a license?** disclosure is only 38 px high. This contradicts the public 44 px control claim. Its claim test runs only the desktop project and does not visit Settings, so it passes without proving the claim. See [`.factory/verification-3.md`](verification-3.md).
 
