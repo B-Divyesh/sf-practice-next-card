@@ -1,49 +1,50 @@
 # Practice Next Card
 
-Practice Next Card is an offline-first handoff notebook for self-directed musicians. It keeps today to three precise cards—piece, measure, and one playable next action—then records a timed attempt, perceived outcome, and the move to pick up next session.
+Practice Next Card helps self-directed musicians leave one precise action at a troublesome measure. The next session starts with the piece, measure, and action already chosen.
 
-It deliberately does not host scores, generate advice, grade playing, count streaks, or make skill-improvement claims. Optional photos and links point only to the musician's own score reference.
+Try the isolated sample at <https://practice-next-card.sociobot.in/demo>. Reset restores the sample, and Start for real returns to your separate practice data.
 
-Live product: <https://practice-next-card.sociobot.in>
+## What it does
 
-## What ships
+- Keeps at most three practice cards for today.
+- Saves card edits and running timers across reloads.
+- Records an attempt outcome, evidence, and an optional follow-up action.
+- Stores an optional local photo or HTTP(S) link to your score reference.
+- Shows the latest 30 archive records in the free core.
+- Exports every card to JSON, imports a confirmed backup, and erases local data.
+- Works offline after the first visit.
 
-- Three-card daily queue with edit, timer, outcomes, evidence, and follow-up handoff
-- Optional compressed score-reference photo or web link
-- Reopenable archive; the latest 30 records are free
-- Complete JSON export/import and local erase controls
-- Installable PWA with an offline app shell and IndexedDB persistence
-- Optional $9 one-time Supporter license for full archive visibility and search
-- Responsive 390 px layout, keyboard operation, light/dark treatments, and reduced motion
+Practice content stays in the browser. The normal practice flow has no analytics, tracking, remote fonts, or third-party scripts. License verification contacts only the Sociobot billing API after a user provides a license.
 
-All practice content stays in the browser. The only third-party request is an explicit checkout/license verification through the Sociobot billing API.
+The optional Supporter edition costs $9 once. A valid license shows the full archive and adds search. Public checkout registration is pending; the free core remains available.
+
+The interface fits a 390 px phone, supports keyboard use, has light and dark themes, and respects reduced-motion settings. Each public promise and its outcome-based command is listed in [`.factory/claims.json`](.factory/claims.json).
 
 ## Run and verify
 
-Requires Node.js 20 or newer.
+Use Node.js 20 or newer.
 
 ```sh
 npm ci
 npm run dev
 npm test
 npm run build
-npm run preview
+npm run test:e2e -- --workers=1
 ```
 
-The exact production build command is `npm run build`; static output lands in `dist/` with `dist/index.html` at its root. Direct `/privacy` and `/terms` entry points are emitted during the build.
-
-For the browser suite, install Chromium once and run:
+Run every declared public claim with:
 
 ```sh
-npx playwright install chromium
-npm run test:e2e
+npm run test:claims
 ```
+
+The production build command is `npm run build`. Static output lands in `dist/`, with `dist/index.html` at its root. Playwright 1.58.2 is pinned in `package.json`.
 
 ## Deployment
 
-Deploy the contents of `dist/` to any static host with HTTPS. The service worker scope is `/`; the build fingerprints JS/CSS and injects their exact names into the precache. The shipped `_headers` and Azure Static Web Apps `staticwebapp.config.json` provide the CSP, anti-framing, Permissions-Policy, manifest MIME type, and immutable cache policy expected by the static deployment. The factory registers and switches the Sociobot product environment; no payment-provider credentials belong in this repository.
+Deploy `dist/` to the product's HTTPS static host. The service worker scope is `/`. Product routes are emitted as direct entry points, and unknown URLs use the designed 404 response.
 
-The researched scope is in [`.factory/brief.json`](.factory/brief.json), the visual and asset provenance in [`.factory/design.md`](.factory/design.md), and verification notes in [`.factory/handoff.md`](.factory/handoff.md).
+The opportunity is in [`.factory/brief.json`](.factory/brief.json). Visual decisions and asset provenance are in [`.factory/design.md`](.factory/design.md). The sample contract is in [`.factory/demo.md`](.factory/demo.md).
 
 ## License
 

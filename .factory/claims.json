@@ -1,0 +1,121 @@
+[
+  {
+    "id": "demo-isolation",
+    "claim": "The one-click demo uses realistic sample cards, resets, and never changes real practice data.",
+    "where": "landing action, demo banner, README",
+    "test": "npm run test:claims -- --grep @claim:demo-isolation",
+    "sandbox": "fresh browser context; /demo; seed a sentinel in the real database; edit and reset demo; start for real; assert sentinel unchanged and demo database removed"
+  },
+  {
+    "id": "three-card-limit",
+    "claim": "Today shows at most three practice cards.",
+    "where": "landing facts, queue, README",
+    "test": "npm run test:claims -- --grep @claim:three-card-limit",
+    "sandbox": "fresh /demo sample; assert three queue records, 3/3 state, disabled add action, and boundary guidance"
+  },
+  {
+    "id": "edit-persistence",
+    "claim": "Card edits are stored locally and survive reload.",
+    "where": "practice card, privacy page, README",
+    "test": "npm run test:claims -- --grep @claim:edit-persistence",
+    "sandbox": "fresh /demo sample; edit an action; reload; assert the changed action remains"
+  },
+  {
+    "id": "timer-persistence",
+    "claim": "A running practice timer survives reload.",
+    "where": "practice card, README",
+    "test": "npm run test:claims -- --grep @claim:timer-persistence",
+    "sandbox": "fresh /demo sample; start timer; wait; reload; assert running state and elapsed time"
+  },
+  {
+    "id": "attempt-handoff",
+    "claim": "An attempt records its outcome, evidence, and optional follow-up action.",
+    "where": "How it works, attempt dialog, README",
+    "test": "npm run test:claims -- --grep @claim:attempt-handoff",
+    "sandbox": "fresh /demo sample; finish a card with outcome, evidence, and follow-up; assert follow-up in Today and evidence in Archive"
+  },
+  {
+    "id": "score-reference",
+    "claim": "A card can keep an optional local photo and HTTP(S) link to the user's score reference.",
+    "where": "card form, What it does not do, README",
+    "test": "npm run test:claims -- --grep @claim:score-reference",
+    "sandbox": "fresh /demo sample; attach a small image and HTTPS link; reload; assert both remain on the card"
+  },
+  {
+    "id": "archive-limit",
+    "claim": "The free archive shows the latest 30 records while retaining older records.",
+    "where": "archive, pricing, README",
+    "test": "npm run test:claims -- --grep @claim:archive-limit",
+    "sandbox": "fresh /demo sample with 32 completed records; assert 30 visible, 2 retained, and no free search field"
+  },
+  {
+    "id": "supporter-license",
+    "claim": "A valid $9 one-time Supporter license shows the full archive and adds search; no checkout link is offered before registration.",
+    "where": "pricing, settings, terms, README",
+    "test": "npm run test:claims -- --grep @claim:supporter-license",
+    "sandbox": "fresh /demo sample; assert pending checkout has no link; use a recorded valid Sociobot verification response; assert price copy, 32 visible records, and working search"
+  },
+  {
+    "id": "json-export",
+    "claim": "JSON export includes every card in the workspace.",
+    "where": "settings, README",
+    "test": "npm run test:claims -- --grep @claim:json-export",
+    "sandbox": "fresh /demo sample; download backup; parse JSON; assert version and all 35 sample records"
+  },
+  {
+    "id": "json-import",
+    "claim": "JSON import replaces the selected workspace after confirmation.",
+    "where": "settings, README",
+    "test": "npm run test:claims -- --grep @claim:json-import",
+    "sandbox": "fresh /demo sample; import a valid one-card backup; confirm replacement; assert only imported card appears"
+  },
+  {
+    "id": "erase-data",
+    "claim": "Erase clears every card in the selected local workspace.",
+    "where": "settings, privacy page, README",
+    "test": "npm run test:claims -- --grep @claim:erase-data",
+    "sandbox": "fresh /demo sample; confirm erase; assert zero cards; reset; assert sample records return"
+  },
+  {
+    "id": "offline-reload",
+    "claim": "Practice cards work offline after the first visit.",
+    "where": "landing facts, privacy page, README",
+    "test": "npm run test:claims -- --grep @claim:offline-reload",
+    "sandbox": "own fresh browser context; /demo sample; wait for service-worker control; set context offline; reload; assert sample card and offline state"
+  },
+  {
+    "id": "local-privacy",
+    "claim": "Practice content stays in the browser with no analytics, tracking, remote fonts, or third-party scripts.",
+    "where": "landing facts, privacy page, README",
+    "test": "npm run test:claims -- --grep @claim:local-privacy",
+    "sandbox": "fresh /demo sample; record all requests through edit and timer actions; assert only same-origin requests and only the demo IndexedDB namespace"
+  },
+  {
+    "id": "responsive-390",
+    "claim": "The interface fits a 390 px phone and keeps controls at least 44 px.",
+    "where": "README",
+    "test": "npm run test:claims -- --grep @claim:responsive-390",
+    "sandbox": "fresh /demo sample at 390 by 844; assert no horizontal overflow and measure every visible button, link, and summary"
+  },
+  {
+    "id": "license-request-consent",
+    "claim": "License verification contacts the Sociobot billing API only after the user provides a license.",
+    "where": "privacy page, README",
+    "test": "npm run test:claims -- --grep @claim:license-request-consent",
+    "sandbox": "fresh /demo settings; intercept the documented billing origin; assert no request before input and exactly one verification request after explicit submit"
+  },
+  {
+    "id": "keyboard",
+    "claim": "The main practice flow works with a keyboard.",
+    "where": "README",
+    "test": "npm run test:claims -- --grep @claim:keyboard",
+    "sandbox": "fresh /demo sample; use Tab, Enter, Escape, and Space; assert skip focus, dialog focus return, and timer state"
+  },
+  {
+    "id": "themes-motion",
+    "claim": "Light and dark themes pass serious accessibility checks, and reduced-motion removes movement.",
+    "where": "README",
+    "test": "npm run test:claims -- --grep @claim:themes-motion",
+    "sandbox": "fresh /demo sample in light and dark reduced-motion media; run axe; assert no serious or critical findings and near-zero transition duration"
+  }
+]

@@ -1,15 +1,17 @@
 import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 
-for (const route of ['privacy', 'terms']) {
+for (const route of ['demo', 'demo/archive', 'demo/settings', 'archive', 'settings', 'privacy', 'terms', '404']) {
   await mkdir(new URL(`../dist/${route}/`, import.meta.url), { recursive: true });
   await copyFile(new URL('../dist/index.html', import.meta.url), new URL(`../dist/${route}/index.html`, import.meta.url));
 }
+await copyFile(new URL('../dist/index.html', import.meta.url), new URL('../dist/404.html', import.meta.url));
 
 const assets = await readdir(new URL('../dist/assets/', import.meta.url));
 const shell = [
-  '/', '/index.html', '/offline.html', '/manifest.webmanifest',
-  '/icons/icon.svg', '/icons/icon-192.png', '/icons/icon-512.png', '/assets/hero-cassette.webp',
+  '/', '/index.html', '/offline.html', '/offline.css', '/manifest.webmanifest',
+  '/icons/icon.svg', '/icons/icon-192.png', '/icons/icon-512.png',
+  '/assets/hero-cassette.webp',
   ...assets.filter(file => /\.(?:js|css)$/.test(file)).sort().map(file => `/assets/${file}`)
 ];
 const cacheFingerprint = createHash('sha256');

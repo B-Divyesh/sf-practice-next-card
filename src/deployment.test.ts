@@ -17,6 +17,9 @@ describe('static deployment policy', () => {
     expect(azureConfig).toContain('"X-Frame-Options": "DENY"');
     expect(azureConfig).toContain('"route": "/assets/*.js"');
     expect(azureConfig).toContain('".webmanifest": "application/manifest+json"');
+    expect(azureConfig).toContain('"responseOverrides"');
+    expect(azureConfig).toContain('"rewrite": "/404.html"');
+    expect(azureConfig).not.toContain('"navigationFallback"');
   });
 
   it('builds fingerprinted JS and CSS so immutable caching is safe', async () => {

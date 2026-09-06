@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { elapsedSeconds, formatTime, hasCardDetails, isHttpUrl, todayQueue, validateImport, type PracticeCard } from './core';
+import { createDemoData, elapsedSeconds, formatTime, hasCardDetails, isHttpUrl, todayQueue, validateImport, type PracticeCard } from './core';
 
 const card = (id: string, status: PracticeCard['status'], createdAt: string): PracticeCard => ({
   id, status, createdAt, updatedAt: createdAt, piece: 'Sonata', measure: '37', action: 'Slow the leap',
@@ -31,5 +31,12 @@ describe('practice card rules', () => {
     expect(hasCardDetails('Bach', '37–40', 'Slow the leap')).toBe(true);
     expect(hasCardDetails(' ', '\n', '\t')).toBe(false);
     expect(() => validateImport({ version: 1, cards: [{ ...card('1', 'queued', '2026-01-01'), piece: ' ', measure: '37', action: 'Play slowly' }] })).toThrow(/incomplete/);
+  });
+
+  it('creates a deterministic demo with three queued and 32 completed cards', () => {
+    const demo = createDemoData();
+    expect(todayQueue(demo.cards)).toHaveLength(3);
+    expect(demo.cards.filter(item => item.status === 'completed')).toHaveLength(32);
+    expect(createDemoData()).toEqual(demo);
   });
 });
