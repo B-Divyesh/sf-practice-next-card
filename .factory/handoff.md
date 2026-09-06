@@ -1,4 +1,16 @@
-# Practice Next Card — independent verifier handoff
+# Practice Next Card — review 1 handoff
+
+## Current release verdict: FAIL
+
+Review 1 on 2026-09-06 found 5 findings and 18 untested public claims in the live implementation candidate `b4a6cbd6029f466a44e1c57995684359f6066bb1`; the report/documentation SHA is `4fd8882a0dcbe53da0651369aea6dce0c9281f37`. See [`.factory/review-1.md`](review-1.md) for the complete evidence.
+
+No product code was changed in this work order. `npm ci`, `npx playwright install chromium`, `npm test` (7/7), `npm run build`, and `npm run test:e2e -- --workers=1` (17 passed, 1 expected skip) passed. Fresh live desktop and phone checks also confirmed the core card loop, offline reload, keyboard focus, target sizes, no serious/critical axe issues, and the previously repaired response policy.
+
+The release is blocked because the required isolated one-click demo and `.factory/demo.md` are absent; `/demo` is the normal data namespace and lacks sample data/banner/reset controls. `.factory/claims.json` and every tagged claim test are absent. The landing copy does not state the job/audience/first action in plain words, routes do not have route-specific titles, and a nonexistent URL renders the home page instead of a designed 404. Canonical/social/touch metadata is also missing.
+
+Next: repair those items, deploy, and request a new independent review. The earlier records below are historical and do not supersede this FAIL verdict.
+
+---
 
 ## Final release verdict: PASS
 
